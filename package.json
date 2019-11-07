@@ -1,0 +1,30 @@
+{
+  "name": "realtimeplayground",
+  "version": "1.0.0",
+  "description": "testing socket io",
+  "author": "Forest",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=6.13.0"
+  },
+  "scripts": {
+    "build": "webpack -w",
+    "start": "nodemon server/index.js",
+    "test": ""
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.5",
+    "eslint-config-hackreactor": "git://github.com/reactorcore/eslint-config-hackreactor",
+    "nodemon": "^1.19.3",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.9"
+  }
+}
