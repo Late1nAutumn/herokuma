@@ -1,20 +1,22 @@
 const express = require("express");
 const bParser = require("body-parser");
 const path = require("path");
-const port = 3000;
-const ctrl = require("./ctrl");
+const ioport =3001;
 
 const app = express();
+const server = require("http").createServer(app);
+const io = require("socket.io")(server);
+
 app.use(bParser.json());
 app.use(bParser.urlencoded({ extended: true }));
 app.use("/", express.static(path.join(__dirname, "../client/dist")));
-app.listen(port, () => {
-  console.log("module Forest server online:" + port);
+// app.get("/test",()=>{console.log("test reached");});
+
+server.listen(ioport,()=>{console.log('\u001b[34mRTP up :'+ioport+'\u001b[0m');});
+
+// const ctrl = require("./ctrl");
+// app.get("/api", ctrl.get);
+
+io.on('connection',(socket)=>{
+  socket.on("test",(data)=>{console.log(data);})
 });
-
-// app.get("/server/test", (req, res) => {
-//   console.log("visited");
-//   res.status(200).send(":" + port + " is watching you");
-// });
-
-app.get("/", ctrl.ctrl);

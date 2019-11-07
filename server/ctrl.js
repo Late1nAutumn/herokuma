@@ -1,7 +1,7 @@
 // const db = require("../db");
 
 module.exports = {
-  ctrl: (req, res) => {
+  get: (req, res) => {
     // db.query(`SELECT * FROM table_name;`,
     //   (err, result) => {
     //     if (err) res.status(400).send(err);
