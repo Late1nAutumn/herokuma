@@ -10,13 +10,18 @@ const io = require("socket.io")(server);
 app.use(bParser.json());
 app.use(bParser.urlencoded({ extended: true }));
 app.use("/", express.static(path.join(__dirname, "../client/dist")));
-app.get("/test",(req,res)=>{res.status(200).send("test reached! :"+ioport)});
+app.get("/test",(req,res)=>{
+  res.status(200).send("test reached! :"+ioport+"; socket:"+socketReached);
+});
 
 server.listen(ioport,()=>{console.log('\u001b[34mRTP up :'+ioport+'\u001b[0m');});
 
 // const ctrl = require("./ctrl");
 // app.get("/api", ctrl.get);
-
+var socketReached=0;
 io.on('connection',(socket)=>{
-  socket.on("test",(data)=>{console.log(data);})
+  socket.on("test",(data)=>{
+    console.log(data);
+    socketReached++;
+  })
 });

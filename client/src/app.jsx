@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import * as io from 'socket.io-client';
 import axios from "axios";
-var socket = io('http://localhost:3001');
+var socket = io('https://lateinautumn.herokuapp.com:'+process.env.PORT);
 
 class App extends React.Component {
   constructor(props) {
@@ -13,7 +13,12 @@ class App extends React.Component {
   }
   socketTest(){
     socket.emit('test',{hi:"it's me"});
-    axios.get('test').then((data)=>{console.log(data.data)},(err)=>{console.log(err)});
+  }
+  getPort(){
+    axios.get('test').then(
+      (data)=>{console.log(data.data)},
+      (err)=>{console.log(err)}
+    );
   }
   componentDidMount() {
     this.setState({
@@ -27,6 +32,7 @@ class App extends React.Component {
         <div>
           Hello World
           <button onClick={this.socketTest}>socket gogo</button>
+          <button onClick={this.getPort}>get port</button>
         </div> : <div></div>}
       </div>
     );
