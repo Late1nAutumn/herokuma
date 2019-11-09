@@ -10,7 +10,7 @@ const io = require("socket.io")(server);
 app.use(bParser.json());
 app.use(bParser.urlencoded({ extended: true }));
 app.use("/", express.static(path.join(__dirname, "../client/dist")));
-app.get("/test",(req,res)=>{res.status(200).send("test reached")});
+app.get("/test",(req,res)=>{res.status(200).send("test reached! :"+ioport)});
 
 server.listen(ioport,()=>{console.log('\u001b[34mRTP up :'+ioport+'\u001b[0m');});
 
