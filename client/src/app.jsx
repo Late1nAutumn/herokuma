@@ -35,12 +35,12 @@ class App extends React.Component {
   submitReady(){
     var status=this.state.attend==="play"?"pend":"play";
     this.setState({attend:status});
-    socket.emit("ready",status);
+    socket.emit("userReady",status);
   }
   submitWatch(){
     var status=this.state.attend==="watch"?"pend":"watch";
     this.setState({attend:status});
-    socket.emit("ready",status);
+    socket.emit("userReady",status);
   }
   componentDidMount() {
     this.setState({id:Math.floor(Math.random()*63365).toString()});
@@ -55,6 +55,10 @@ class App extends React.Component {
         console.log("you've been marked as afk");
     });
   
+    socket.on("moveIndex",(index)=>{ //triggered when others disconnected, but this client is the last one on list
+      this.setState({index:index.toString()});
+      socket.emit("updateIndex",index);
+    });
     socket.on("roomUpdate",()=>{ //triggered when anyone dc,afk,ready,login
       socket.emit("getRoomInfo",this.state.index);
     });
