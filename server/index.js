@@ -2,6 +2,10 @@ const { io, app } = require("./init");
 const Player = require("./class/player");
 const Deck = require("./class/deck");
 
+const log = (str,color)=>{
+  console.log("\u001b["+color+"m"+str+"\u001b[0m");
+};
+
 var players = [];
 var roommates = [];
 var deck = new Deck();
@@ -28,46 +32,70 @@ const roomInfo=(index)=>{
 //   deck = pack.slice();
 // };
 // initRoom();
-io.on("connection", socket => {
-  setInterval(() => {
-    socket.emit("attendance","");
-  }, 5000);
-  //Todo: reconnection
-});
+setInterval(() => {
+  // log("?aa",33);
+  var now=(new Date()).getTime();
+  for(var i of roommates){
+    if(now-i.lastRes>8000 && i.attend==="pend"){
+      i.attend="watch";
+      i.socket.emit("clientState",{attend:"watch"});
+      i.socket.emit("clientLog",["absence"]);
 
-app.put("/attendance",(req,res)=>{//triggered by E:attendance
-  var i=req.body.index;
-  if(roommates[i]){
-    if(roommates[i].attend!=="pend")
-      roommates[i].lastRes=(new Date()).getTime();
-    else{
-      if((new Date()).getTime()-roommates[i].lastRes>7000){
-        roommates[i].attend="watch";
-        socket.emit("roomupdate",roomInfo(i));
-      }
+      log("broadcast: room update",32);
+      io.sockets.emit("roomUpdate","");
     }
-    res.status(202).send();
-  }else{
-    //error will happen when server restarted with a old client running
-    res.status(400).send("user not registered");
   }
-});
+}, 5000);
 
-app.post("/namesubmit",(req,res)=>{//triggered by user submit
+io.on("connection", socket => {//might be more efficiently done on 'connect'
   //Todo: avoid spam name
-  var temp = new Player(req.body.name);
+
+  var index=-1;
+  log("new connection",33);
   // temp.drawCard(deck.draw(10));
-  temp.index=roommates.length.toString();
-  roommates.push(temp);
+  
+  socket.on("nameSubmit",({name,id})=>{
+    var temp = new Player(socket);
+    temp.name = name;
+    temp.id = id;
+    index = roommates.length;
+    temp.index = index.toString();
+    roommates.push(temp);
 
-  res.status(201).send({
-    id: temp.id,
-    index: temp.index,
-    gaming: gameStarted,
-    room: roomInfo(temp.index)
+    socket.emit("clientState",{ //must use the same key with client state
+      index: temp.index,
+      page: gameStarted?"play":"room"
+    });
+    socket.emit("clientLog",["roomInfo"]);
+
+    log("broadcast: room update",32);
+    io.sockets.emit("roomUpdate","");
   });
-});
 
-app.put("/ready",(req,res)=>{
-  //send room info
+  socket.on("disconnect",()=>{
+    //Todo: disconnect while gaming
+    //Todo: reconnection
+    log("user "+index+" disconnected",31);
+    if(index!==-1){
+      roommates[index]=roommates[roommates.length-1];
+      roommates.pop();
+      if(roommates[index])
+        roommates[index].socket.emit("clientState",{index:index});
+      log("broadcast: room update",32);
+      io.sockets.emit("roomUpdate","");
+    }
+  });
+
+  socket.on("getRoomInfo",(/*index*/)=>{ //triggered after S:roomUpdate
+    socket.emit("clientState",{roommates: roomInfo(index)});
+    socket.emit("clientLog",["roomInfo"]);
+  });
+
+  socket.on("ready",(status)=>{
+    roommates[index].attend=status;
+    roommates[index].lastRes=(new Date()).getTime();
+    log("broadcast: room update",32);
+    io.sockets.emit("roomUpdate","");
+  })
+
 });
