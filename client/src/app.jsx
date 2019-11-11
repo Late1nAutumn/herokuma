@@ -1,27 +1,33 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import * as io from 'socket.io-client';
-import axios from "axios";
+// import axios from "axios";
 
 import Lobby from "./lobby.jsx";
+import Desktop from "./desktop.jsx";
 
-const DEVMODE = true;
-const URL = DEVMODE
-  ?"http://localhost:3001"
-  :"https://lateinautumn.herokuapp.com";
-const socket = io.connect(URL);
+const socket = io.connect(
+  "http://localhost:3000");
+  // "https://lateinautumn.herokuapp.com");
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: "name", //room, play
+      page: "name", //room, desk
       //user info
       name:"", id:"", index:"",
       attend:"pend", //play, watch
+      order:-1,
+      hand:[],
       //room info
-      roommates:[], //Todo: show roommate names
-      players:[]
+      roommates:[], //{name,attend}//Todo: show roommate names
+      //desk info
+      players:[], //{name,remainHand}
+      remainCard:108,
+      history:[],
+      playOrder:0,
+      playDirection:1
     };
   }
   inputName(e){this.setState({name:e.target.value})}
@@ -63,6 +69,18 @@ class App extends React.Component {
       socket.emit("getRoomInfo",this.state.index);
     });
 
+    socket.on("countdown",()=>{});
+
+    socket.on("playerInit",(data)=>{ //triggered for player only
+      console.log("player data loaded");
+      this.setState(data);
+      socket.emit("updateOrder",data.order);
+    });
+    socket.on("gameStart",(data)=>{
+      console.log("GAME START");
+      this.setState(data);
+    });
+
   }
   render() {
     return (
@@ -78,11 +96,22 @@ class App extends React.Component {
           </div>:<div><br/>{this.state.name}</div>}
           {/* <div id="memberCount">{"<0> 8"}</div> */}
         </div>
+
         {this.state.page!=="room"?<div/>:<Lobby
           data={this.state.roommates}
           ready={this.submitReady.bind(this)}
           watch={this.submitWatch.bind(this)}/>}
-        {this.state.page==="play"?<div></div>:<div/>}
+
+        {this.state.page!=="desk"?<div/>:<Desktop
+          players={this.state.players}
+          remainCard={this.state.remainCard}
+          history={this.state.history}
+          playOrder={this.state.playOrder}
+          playDirection={this.state.playDirection}
+
+          order={this.state.order}
+          hand={this.state.hand}/>}
+
         <div id="chat"></div>
       </div>
     );

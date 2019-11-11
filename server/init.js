@@ -1,7 +1,7 @@
 const express = require("express");
 const bParser = require("body-parser");
 const path = require("path");
-const ioport = process.env.PORT || 3001;
+const ioport = process.env.PORT || 3000;
 
 const app = express();
 const server = require("http").createServer(app);

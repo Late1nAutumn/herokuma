@@ -9,7 +9,8 @@ class player{
     this.lastRes=(new Date()).getTime();//can we set this number smaller?
     // this.online=true;
     //ip adress?
-    this.hand=[];
+    this.order=undefined; //not updated in roommates
+    this.hand=[]; //not updated in roommates
   }
   drawCard(arr){
     arr.map((str)=>{this.hand.push(str)})

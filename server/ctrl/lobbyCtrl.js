@@ -1,8 +1,9 @@
 const { io, app } = require("../init");
 const Player = require("../class/player");
+const config = require("../config");
 
 var roommates = [];
-var gameStarted = false;
+var launchCounter = 0; //avoid multiple launch
 
 const log=(str,color)=>{
   console.log("\u001b["+color+"m"+str+"\u001b[0m");
@@ -27,6 +28,29 @@ const roomUpdate=(str)=>{
   log("broadcast: room update("+str+")",32);
   io.sockets.emit("roomUpdate","");
 };
+const checkRoomState=(callback)=>{
+  const startCheck=()=>{
+    var sum=0;
+    for(var i of roommates){
+      if(i.attend==="pend")return false;
+      if(i.attend==="play")sum++;
+    }
+    if(sum>=config.playerMin && sum<=config.playerMax)return true;
+    return false;
+  };
+  if(startCheck()){
+    launchCounter++;
+    log("game start in 5",32);
+    setTimeout(() => {
+      launchCounter--;
+      if(launchCounter===0)
+        callback();
+    }, 2000);
+    return "countdown";
+  }
+  return "lfm";
+};
+
 module.exports={
   log: log,
   attend: (time)=>{setInterval(() => {
@@ -41,7 +65,7 @@ module.exports={
       }
     }
   }, time)},
-  nameSubmit: (socket,name,id)=>{
+  nameSubmit: (socket,name,id,gaming)=>{
     var temp = new Player(socket);
     temp.name = name;
     temp.id = id;
@@ -51,13 +75,19 @@ module.exports={
 
     socket.emit("clientState",{ //must use the same key with client state
       index: temp.index,
-      page: gameStarted?"play":"room"
+      page: gaming==="playing"?"desk":"room"
     });
     socket.emit("clientLog",["roomInfo"]);
     roomUpdate("login");
     return index;
   },
-  disconnect: (index)=>{
+  userReady: (status,index,callback)=>{
+    roommates[index].attend=status;
+    roommates[index].lastRes=(new Date()).getTime();
+    roomUpdate("ready");
+    return checkRoomState(callback);
+  },
+  disconnect: (index,callback)=>{
     log("user "+index+" disconnected",31);
     if(index!==-1){
       roommates[index]=roommates[roommates.length-1];
@@ -66,15 +96,36 @@ module.exports={
         roommates[index].socket.emit("moveIndex",index);
       }
       roomUpdate("dc");
+      return checkRoomState(callback);
     }
   },
   getRoomInfo: (socket,index)=>{
     socket.emit("clientState",{roommates: roomInfo(index)});
     socket.emit("clientLog",["roomInfo"]);
   },
-  userReady: (status,index)=>{
-    roommates[index].attend=status;
-    roommates[index].lastRes=(new Date()).getTime();
-    roomUpdate("ready");
-  },
+  gameStarter: ()=>{
+    var res=[];
+    for(var i of roommates)
+      if(i.attend==="play")
+        res.push(i);
+
+    var order=[]; //shuffle order
+    for(var i=0;i<res.length;i++)order.push(i);
+    for(var i of res){
+      var n=Math.floor(Math.random()*res.length);
+      i.order=order[n];
+      order[n]=order.pop();
+      i.hand=[];
+    }
+    for(var i=0;i<res.length-1;i++) //sort res by order
+      for(var j=i+1;j<res.length;j++)
+        if(res[i].order>res[j].order){
+          var temp=res[j];
+          res[j]=res[i];
+          res[i]=temp;
+        }
+    for(var i=0;i<res.length;i++) //send order to roommates
+      roommates[res[i].index].order=i;
+    return res;
+  }
 };

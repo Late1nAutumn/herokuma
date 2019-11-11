@@ -61,3 +61,30 @@ body {
 p.lobbyButton {
   vertical-align: middle;
 }
+.deskStatus{
+  display: inline-block;
+}
+.playerIdol{
+  display: inline-block;
+  margin: 5px;
+  padding: 5px;
+  background-color: rgba(100, 100, 100, 0.5);
+}
+.playerText{
+  text-align: middle;
+}
+.buttonBox,.handCard{
+  display: inline-block;
+}
+.interfaceButton{
+  text-align: middle;
+  background-color: darkgrey;
+  margin: 5px;
+}
+.handCard{
+  height:100px;
+  width: 50px;
+  border: 3px solid white;
+  border-radius: 10px;
+  margin: 10px;
+}
