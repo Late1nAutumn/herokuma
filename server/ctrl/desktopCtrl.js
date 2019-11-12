@@ -54,7 +54,7 @@ module.exports={
 
     if(card[1]==="r")playDirection=0-playDirection;
     if(players.length!==1) //only happen in devmode
-      playOrder=(playOrder+(1+(card[1]==="s"?1:0))*playDirection)%players.length;
+      playOrder=(playOrder+(card[1]==="s"?2:1)*playDirection+players.length)%players.length;
 
     var data=[];
     players[order].socket.emit("clientState",{hand: players[order].hand});

@@ -46,7 +46,7 @@ class Desktop extends React.Component{
             +this.cardColorClass(obj.card)}>
             {this.cardName(obj.card)}
           </div>
-          <div>{obj.player}</div>
+          <div className="historyPlayer">{obj.player}</div>
         </div>
       ))}
     </div>
