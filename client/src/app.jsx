@@ -7,8 +7,10 @@ import Lobby from "./lobby.jsx";
 import Desktop from "./desktop.jsx";
 
 const socket = io.connect(
-  "http://localhost:3000");
-  // "https://lateinautumn.herokuapp.com");
+  // "http://localhost:3000");
+  "https://lateinautumn.herokuapp.com");
+
+window.reset=(pw)=>{socket.emit("reset",pw)};
 
 class App extends React.Component {
   constructor(props) {
@@ -48,7 +50,14 @@ class App extends React.Component {
     this.setState({attend:status});
     socket.emit("userReady",status);
   }
+  playCard(i){
+    socket.emit("playCard",i);
+  }
+  drawCard(n){
+    socket.emit("drawCard",n);
+  }
   componentDidMount() {
+    console.log(process.env.PORT);
     this.setState({id:Math.floor(Math.random()*63365).toString()});
     var time=(new Date()).getTime();
     console.log("App loading time:"+(time-window.startTime)+"ms");
@@ -110,7 +119,10 @@ class App extends React.Component {
           playDirection={this.state.playDirection}
 
           order={this.state.order}
-          hand={this.state.hand}/>}
+          hand={this.state.hand}
+          
+          playCard={this.playCard.bind(this)}
+          drawCard={this.drawCard.bind(this)}/>}
 
         <div id="chat"></div>
       </div>

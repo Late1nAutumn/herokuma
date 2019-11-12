@@ -62,9 +62,13 @@ io.on("connection", socket => { //might be better using on 'connect'
     order=num;
   });
   
+  socket.on("playCard",(i)=>{
+    desktopCtrl.playCard(order,i);
+  })
+
   socket.on("drawCard",(n)=>{
     desktopCtrl.drawCard(order,n);
   });
 
-  // socket.on("reset",()=>{});
+  socket.on("reset",(pw)=>{lobbyCtrl.reset(pw)});
 });

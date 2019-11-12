@@ -89,6 +89,7 @@ module.exports={
   },
   disconnect: (index,callback)=>{
     log("user "+index+" disconnected",31);
+    io.sockets.emit("clientState",{page:"room"});
     if(index!==-1){
       roommates[index]=roommates[roommates.length-1];
       roommates.pop();
@@ -127,5 +128,11 @@ module.exports={
     for(var i=0;i<res.length;i++) //send order to roommates
       roommates[res[i].index].order=i;
     return res;
+  },
+  reset: (password)=>{
+    if(password!==config.resetPassword)return;
+    log("RESET ACTIVATED",31);
+    io.sockets.emit("clientState",{page:"name"});
+    roommates = [];
   }
 };

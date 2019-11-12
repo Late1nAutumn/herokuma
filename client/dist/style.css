@@ -10,7 +10,7 @@ body {
 .nav {
   height: 50px;
 }
-.lobbyList {
+.lobbyList,.desktop {
   margin: 10px 0 10px 10px;
   height: 610px;
   width: 60%;
@@ -64,16 +64,25 @@ p.lobbyButton {
 .deskStatus{
   display: inline-block;
 }
-.playerIdol{
+.playerIdol,.playerIdolPlaying{
   display: inline-block;
   margin: 5px;
   padding: 5px;
-  background-color: rgba(100, 100, 100, 0.5);
+  background-color: #ccc;
+}
+.playerIdolPlaying{
+  box-shadow: 0 0 5px 5px yellow;
 }
 .playerText{
   text-align: middle;
 }
-.buttonBox,.handCard{
+
+
+
+.handPlaying{
+  box-shadow: inset 0 0 5px 5px crimson;
+}
+.buttonBox,.handCard,.historyCardContainer{
   display: inline-block;
 }
 .interfaceButton{
@@ -81,10 +90,33 @@ p.lobbyButton {
   background-color: darkgrey;
   margin: 5px;
 }
-.handCard{
+.handCard,.historyCard,.lastHistory{
+  text-align: center;
+  vertical-align: middle;
   height:100px;
   width: 50px;
   border: 3px solid white;
   border-radius: 10px;
   margin: 10px;
+  padding:10px;
+  font-size: 30px;
+}
+.lastHistory{
+  height: 150px;
+  width: 75px;
+}
+.wildCard{
+  background-color: grey;
+}
+.yellowCard{
+  background-color: yellow;
+}
+.blueCard{
+  background-color: blue;
+}
+.redCard{
+  background-color: red;
+}
+.greenCard{
+  background-color: green;
 }
