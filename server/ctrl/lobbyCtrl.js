@@ -58,17 +58,16 @@ module.exports={
     var now=(new Date()).getTime();
     for(var i of roommates){
       if(now-i.lastRes>8000 && i.attend==="pend"){
-        i.attend="watch";
+        i.attending("watch");
         i.socket.emit("clientState",{attend:"watch"});
         i.socket.emit("clientLog",["absence"]);
         roomUpdate("afk");
       }
     }
   }, time)},
-  nameSubmit: (socket,name,id,gaming)=>{
+  nameSubmit: (socket,name,gaming)=>{
     var temp = new Player(socket);
     temp.name = name;
-    temp.id = id;
     var index = roommates.length;
     temp.index = index.toString();
     roommates.push(temp);
@@ -82,8 +81,7 @@ module.exports={
     return index;
   },
   userReady: (status,index,callback)=>{
-    roommates[index].attend=status;
-    roommates[index].lastRes=(new Date()).getTime();
+    roommates[index].attending(status);
     roomUpdate("ready");
     return checkRoomState(callback);
   },
@@ -98,7 +96,9 @@ module.exports={
       roomUpdate("dc");
       return checkRoomState(callback);
     }
+    for(var i of roommates) i.attending("pend");
     io.sockets.emit("clientState",{page:"room"}); //just avoid bug for now
+    return "lfm";
   },
   getRoomInfo: (socket,index)=>{
     socket.emit("clientState",{roommates: roomInfo(index)});
@@ -126,13 +126,16 @@ module.exports={
           res[i]=temp;
         }
     for(var i=0;i<res.length;i++) //send order to roommates
+    //Todo: fix bug here when client dc while counting down
       roommates[res[i].index].order=i;
     return res;
   },
-  reset: (password)=>{
-    if(password!==config.resetPassword)return;
+  reset: (password,gaming)=>{
+    if(password!==config.resetPassword)return gaming;
     log("RESET ACTIVATED",31);
+    for(var i of roommates) i.attending("pend");
     io.sockets.emit("clientState",{page:"name"});
     roommates = [];
+    return "lfm"
   }
 };

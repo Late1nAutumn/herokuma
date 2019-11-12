@@ -30,8 +30,8 @@ io.on("connection", socket => { //might be better using on 'connect'
 
   //Todo: avoid spam name
 
-  socket.on("nameSubmit", ({ name, id }) => {
-    index = lobbyCtrl.nameSubmit(socket, name, id, gaming);
+  socket.on("nameSubmit", ({name}) => {
+    index = lobbyCtrl.nameSubmit(socket, name, gaming);
     //Todo:during gaming
   });
 
@@ -41,9 +41,7 @@ io.on("connection", socket => { //might be better using on 'connect'
 
   socket.on("disconnect", () => {
     //Todo: reconnection
-    lobbyCtrl.disconnect(index,()=>{gameStarter();});
-    //Todo: disconnect while gaming
-    //Todo: end game when all left
+    gaming=lobbyCtrl.disconnect(index,()=>{gameStarter();});
   });
   socket.on("updateIndex", i => { //triggered after S:disconnect
     index = i; //this is an ugly move. parameter's change shouldn't rely on client
@@ -62,13 +60,13 @@ io.on("connection", socket => { //might be better using on 'connect'
     order=num;
   });
   
-  socket.on("playCard",(i)=>{
-    desktopCtrl.playCard(order,i);
+  socket.on("playCard",({i,card,combo})=>{
+    desktopCtrl.playCard(order,i,card,combo);
   })
 
   socket.on("drawCard",(n)=>{
     desktopCtrl.drawCard(order,n);
   });
 
-  socket.on("reset",(pw)=>{lobbyCtrl.reset(pw)});
+  socket.on("reset",(pw)=>{gaming=lobbyCtrl.reset(pw,gaming)});
 });

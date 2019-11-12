@@ -7,18 +7,18 @@ import Lobby from "./lobby.jsx";
 import Desktop from "./desktop.jsx";
 
 const socket = io.connect(
-  // "http://localhost:3000");
-  "https://lateinautumn.herokuapp.com");
+  "http://localhost:3000");
+  // "https://lateinautumn.herokuapp.com");
 
 window.reset=(pw)=>{socket.emit("reset",pw)};
-
+//Todo: fix any style bug by empty string (or space)
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       page: "name", //room, desk
       //user info
-      name:"", id:"", index:"",
+      name:"", index:"",
       attend:"pend", //play, watch
       order:-1,
       hand:[],
@@ -35,31 +35,7 @@ class App extends React.Component {
   inputName(e){this.setState({name:e.target.value})}
   submitName(){
     if(this.state.name==="")this.setState({name:"anonymous"});
-    socket.emit("nameSubmit",{
-      name:this.state.name||"anonymous",
-      id:this.state.id
-    });
-  }
-  submitReady(){
-    var status=this.state.attend==="play"?"pend":"play";
-    this.setState({attend:status});
-    socket.emit("userReady",status);
-  }
-  submitWatch(){
-    var status=this.state.attend==="watch"?"pend":"watch";
-    this.setState({attend:status});
-    socket.emit("userReady",status);
-  }
-  playCard(i){
-    socket.emit("playCard",i);
-  }
-  drawCard(n){
-    socket.emit("drawCard",n);
-  }
-  componentDidMount() {
-    this.setState({id:Math.floor(Math.random()*63365).toString()});
-    var time=(new Date()).getTime();
-    console.log("App loading time:"+(time-window.startTime)+"ms");
+    socket.emit("nameSubmit",{name:this.state.name||"anonymous"});
 
     socket.on("clientState",(data)=>{this.setState(data);});
     socket.on("clientLog",(operation)=>{ //triggered with clientState
@@ -88,7 +64,31 @@ class App extends React.Component {
       console.log("GAME START");
       this.setState(data);
     });
+  }
+  submitReady(){
+    var status=this.state.attend==="play"?"pend":"play";
+    this.setState({attend:status});
+    socket.emit("userReady",status);
+  }
+  submitWatch(){
+    var status=this.state.attend==="watch"?"pend":"watch";
+    this.setState({attend:status});
+    socket.emit("userReady",status);
+  }
+  playCard(i,extra,combo){
+    var valid=true;
+    var card=this.state.hand[i]+extra;
+    var target=this.state.history[0].card;
+    // if(target.slice(0,2)==="wd")
 
+    if(valid) socket.emit("playCard",{i:i,card:card,combo:combo});
+  }
+  drawCard(n){
+    socket.emit("drawCard",n);
+  }
+  componentDidMount() {
+    var time=(new Date()).getTime();
+    console.log("App loading time:"+(time-window.startTime)+"ms");
   }
   render() {
     return (

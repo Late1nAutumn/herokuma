@@ -5,11 +5,15 @@ class Desktop extends React.Component{
     this.state={};
   }
   cardColorClass(str){
-    if(str[0]==='w')return " wildCard";
-    if(str[0]==='b')return " blueCard";
-    if(str[0]==='r')return " redCard";
-    if(str[0]==='g')return " greenCard";
-    if(str[0]==='y')return " yellowCard";
+    const color=(ch)=>{
+      if(ch==='b')return " blueCard";
+      if(ch==='r')return " redCard";
+      if(ch==='g')return " greenCard";
+      if(ch==='y')return " yellowCard";
+      return " wildCard";
+    };
+    if(str[0]==='w')return color(str[2]);
+    return color(str[0]);
   }
   cardName(str){
     if(str==='wd')return "+4";
@@ -22,24 +26,29 @@ class Desktop extends React.Component{
   render(){return(<div className="desktop">
     <div>
       <div className="deskStatus">{"Cards in deck: "+this.props.remainCard}</div>
-      <div className="deskStatus">{"Now playing from "+(this.props.playDirection>0?"LEFT":"RIGHT")
-        +" to "+(this.props.playDirection<0?"LEFT":"RIGHT")}</div>
+      <div className="deskStatus">{"Now playing "+
+        (this.props.playDirection>0?"FORWARD":"BACKWARD")}</div>
     </div>
 
-    <div>{(()=>{
+    <div className="opponents">{(()=>{
       var temp=[];
       //using while loop here might lead to dead loop, don't do it
-      for(var i=this.props.order+1;i<this.props.players.length;i++)temp.push(i);
+      for(var i=this.props.order+1;i<this.props.players.length;i++) temp.push(i);
       for(var i=0;i<this.props.order;i++) temp.push(i);
+
       return temp.map((i)=>(
-        <div className={this.props.playOrder===i?"playerIdolPlaying":"playerIdol"}>
-          <div className="playerText">{this.props.players[i].name}</div>
-          <div className="playerText">{"cards: "+this.props.players[i].remainHand}</div>
+        <div className={this.props.playOrder===i?"opponentIdolPlaying":"opponentIdol"}>
+          <div className="opponentOrder"><b>{i+1}</b></div>
+          <div className="opponentText">{this.props.players[i].name}</div>
+          <div className="opponentText">
+            cards:&nbsp;<b>{this.props.players[i].remainHand}</b>
+          </div>
         </div>
       ))
     })()}</div>
 
     <div className="history">
+      {/* Todo: show extra info */}
       {this.props.history.map((obj,i)=>(
         <div className="historyCardContainer">
           <div className={(i===0?"lastHistory":"historyCard")
@@ -58,6 +67,8 @@ class Desktop extends React.Component{
         <div className="interfaceButton">uno</div>
       </div>
       {this.props.hand.map((str,i)=>(
+        // Todo: wild card color picking
+        // Todo: combo card modal
         <div className={"handCard"+this.cardColorClass(str)}
           onClick={()=>{this.props.playCard(i)}}>
           {this.cardName(str)}

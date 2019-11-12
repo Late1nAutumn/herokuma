@@ -7,43 +7,50 @@ const initPlayers = require("./lobbyCtrl").gameStarter;
 
 var players = [];
 var deck = null;
-var history = []; //{card:str, player:name}
+var history = []; //{card:str, player:name, extra:str (e.g. r12)}
 var playOrder = 0;
 var playDirection = 1;
+
+const remainingHandData=()=>{
+  var data=[]; //pluck player info
+  for(var i of players){
+    data.push({
+      name: i.name,
+      remainHand: i.hand.length
+    });
+  }
+  return data;
+};
+const deckInfo=()=>{return{
+  remainCard: deck.deck.length,
+  players:remainingHandData(),
+  history: history,
+  playOrder: playOrder,
+  playDirection: playDirection,
+}};
 
 module.exports={
   gameStarter:()=>{
     players=initPlayers();
     deck = new Deck();
-    history = [{card:deck.draw(1)[0],player:"START"}]; //Todo: add a card as initial
-    playOrder = 0;
+    history = [{card:deck.draw(1)[0],player:"START"}];
+    playOrder = Math.floor(Math.random()*players.length);
     playDirection = 1;
     log("GAME START",31);
-    var data=[];
     for(var i of players){
       i.drawCard(deck.draw(7));
       i.socket.emit("playerInit",{
         hand: i.hand,
         order: i.order
       });
-      data.push({ //pluck player info
-        name: i.name,
-        remainHand: i.hand.length
-      });
     }
     io.sockets.emit("gameStart",{ //all roommates
-      page:"desk",
-      remainCard: deck.deck.length,
-      players: data,
-      history: history, //Todo: last 5
-      playOrder: 0,
-      playDirection: 1,
+      ...{page:"desk"},...deckInfo()
     });
   },
-  playCard:(order,i)=>{
+  playCard:(order,i,card,combo)=>{
     log("player "+order+" plays a card",32);
-    var card=players[order].hand[i];
-    deck.pile.push(card);
+    deck.pile.push(card.slice(0,2));
     history.unshift({
       card:card,
       player:players[order].name
@@ -54,37 +61,20 @@ module.exports={
 
     if(card[1]==="r")playDirection=0-playDirection;
     if(players.length!==1) //only happen in devmode
-      playOrder=(playOrder+(card[1]==="s"?2:1)*playDirection+players.length)%players.length;
+      playOrder=
+        (playOrder+(card[1]==="s"?2:1) * playDirection+players.length)
+        %players.length;
 
-    var data=[];
     players[order].socket.emit("clientState",{hand: players[order].hand});
-    for(var i of players){
-      data.push({
-        name: i.name,
-        remainHand: i.hand.length
-      });
-    }
-    io.sockets.emit("clientState",{
-      remainCard: deck.deck.length,
-      players: data,
-      history: history,
-      playOrder: playOrder,
-      playDirection: playDirection,
-    });
+    
+    io.sockets.emit("clientState",deckInfo());
   },
   drawCard:(order,n)=>{
     if(order!==-1)  players[order].drawCard(deck.draw(n));
     players[order].socket.emit("clientState",{hand: players[order].hand});
-    var data=[];
-    for(var i of players){
-      data.push({
-        name: i.name,
-        remainHand: i.hand.length
-      });
-    }
     io.sockets.emit("clientState",{
       remainCard: deck.deck.length,
-      players: data
+      players: remainingHandData()
     });
   },
 };

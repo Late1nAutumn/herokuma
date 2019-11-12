@@ -21,8 +21,8 @@ class Lobby extends React.Component{
               status="spectator";
             return(
               <div className={classname}>
-                <div className="clientName">{obj.name||""}</div>
-                <div className="clientAttend">{status||""}</div>
+                <div className="clientName">{obj.name}</div>
+                <div className="clientAttend">{status}</div>
               </div>
             );
           });

@@ -9,7 +9,7 @@ class deck{
            'y1','y2','y3','y4','y5','y6','y7','y8','y9','yd','yr','ys',
       'g0','g1','g2','g3','g4','g5','g6','g7','g8','g9','gd','gr','gs',
            'g1','g2','g3','g4','g5','g6','g7','g8','g9','gd','gr','gs',
-      'wd','wd','wd','wd','wc','wc','wc','wc']; //wdg, wcb
+      'wd','wd','wd','wd','wc','wc','wc','wc'];
     this.pile=[];
   }
   draw(n){
@@ -17,13 +17,12 @@ class deck{
     for(var i=0;i<n;i++){
       var card = Math.floor(Math.random()*this.deck.length);
       res.push(this.deck[card]);
-      this.deck[card]=this.deck.pop();//o(1) to set array
-
-      if(!this.deck[0]){
+      if(this.deck.length===1){
         this.deck=this.pile;
         this.pile=[];
+        //edge case bug: if all cards are in players' hand
       }
-      //edge case bug: if all cards are in players' hand
+      else this.deck[card]=this.deck.pop();//o(1) to set array
     }
     return res;
   }

@@ -10,19 +10,24 @@ body {
 .nav {
   height: 50px;
 }
-.lobbyList,.desktop {
+.lobbyList,
+.desktop {
   margin: 10px 0 10px 10px;
   height: 610px;
   width: 60%;
+}
+.desktop {
+  margin-top: 0;
 }
 .lobbyItem0,
 .lobbyItem1,
 .lobbyItemReady {
   height: 40px;
-  font-size: 35px;
+  font-size: 30px;
   border-radius: 12px;
   color: #888;
   margin-top: 10px;
+  box-shadow: inset 0 -5px 5px 0 #bbb;
 }
 .lobbyItem0 {
   background-color: #ddd;
@@ -36,12 +41,7 @@ body {
 .clientName,
 .clientAttend {
   display: inline-block;
-  text-align: right;
-}
-.clientName {
-  width: 35%;
-}
-.clientAttend {
+  text-align: center;
   width: 50%;
 }
 .lobbyButton {
@@ -55,77 +55,101 @@ body {
   border-radius: 4px;
   border: 1px solid #bbb;
 }
-.lobbyButton:hover{
+.lobbyButton:hover {
   background-color: yellow;
 }
 p.lobbyButton {
   vertical-align: middle;
 }
-.deskStatus{
+/* .deskStatus{
   display: inline-block;
+} */
+.opponents {
+  margin-top: 20px;
 }
-.playerIdol,.playerIdolPlaying{
+.opponentIdol,
+.opponentIdolPlaying {
   display: inline-block;
-  margin: 5px;
-  padding: 5px;
+  margin: 15px;
+  padding: 10px;
   background-color: #ccc;
+  border: 3px solid white;
+  border-radius: 4px;
 }
-.playerIdolPlaying{
+.opponentIdolPlaying {
   box-shadow: 0 0 5px 5px yellow;
 }
-.playerText{
-  text-align: middle;
+.opponentOrder {
+  background-color: lightsteelblue;
+  border: 3px solid white;
+  border-radius: 15px;
+  height: 24px;
+  width: 24px;
+  margin: -18px 0px 0px -18px;
+  font-size: 20px;
+}
+.opponentText,
+.opponentOrder {
+  text-align: center;
+  color: white;
 }
 
-
-.history{
-  margin: 30px 0;
+.history {
+  margin: 10px 0 20px 80px;
 }
-.historyPlayer{
+.historyPlayer {
   text-align: center;
 }
-.handCard,.historyCard,.lastHistory{
+.handCard,
+.historyCard,
+.lastHistory {
   text-align: center;
   vertical-align: middle;
-  height:100px;
+  font-size: 30px;
+  color: white;
+  height: 80px;
   width: 50px;
   border: 3px solid white;
   border-radius: 10px;
   margin: 10px;
-  padding:10px;
-  font-size: 30px;
+  padding: 10px;
 }
-.lastHistory{
-  height: 150px;
+.lastHistory {
+  font-size: 45px;
+  height: 120px;
   width: 75px;
 }
 
-.hand,.handPlaying{
+.hand,
+.handPlaying {
   padding: 15px;
+  border-radius: 7px;
 }
-.handPlaying{
+.handPlaying {
   box-shadow: inset 0 0 5px 5px crimson;
 }
-.buttonBox,.handCard,.historyCardContainer{
+.buttonBox,
+.handCard,
+.historyCardContainer {
   display: inline-block;
 }
-.interfaceButton{
+.interfaceButton {
   text-align: middle;
   background-color: darkgrey;
   margin: 5px;
 }
-.wildCard{
+.wildCard {
   background-color: grey;
 }
-.yellowCard{
+.yellowCard {
   background-color: yellow;
 }
-.blueCard{
+.blueCard {
   background-color: blue;
 }
-.redCard{
+.redCard {
   background-color: red;
 }
-.greenCard{
+.greenCard {
   background-color: green;
 }

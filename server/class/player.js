@@ -2,7 +2,6 @@ class player{
   constructor(socket){
     this.socket=socket;
     this.name="anonymous";
-    this.id="";
     this.index=undefined;//as roommate
 
     this.attend="pend"; //play, watch
@@ -14,6 +13,10 @@ class player{
   }
   drawCard(arr){
     arr.map((str)=>{this.hand.push(str)})
+  }
+  attending(str){
+    this.attend=str;
+    this.lastRes=(new Date()).getTime();
   }
 };
 
