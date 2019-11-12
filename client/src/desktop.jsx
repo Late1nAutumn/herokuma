@@ -12,11 +12,11 @@ class Desktop extends React.Component{
     if(str[0]==='y')return " yellowCard";
   }
   cardName(str){
+    if(str==='wd')return "+4";
+    if(str==='wc')return "wild";
     if(str[1]==='d')return "+2";
     if(str[1]==='s')return "skip";
     if(str[1]==='r')return "reve\nrse";
-    if(str[1]==='d')return "+4";
-    if(str[1]==='c')return "wild";
     return str[1];
   }
   render(){return(<div className="desktop">
@@ -28,11 +28,9 @@ class Desktop extends React.Component{
 
     <div>{(()=>{
       var temp=[];
-      var i=(this.props.order+1)%this.props.players.length;
-      while(i!==this.props.order){
-        temp.push(i);
-        i=(i+1)%this.props.players.length;
-      }
+      //using while loop here might lead to dead loop, don't do it
+      for(var i=this.props.order+1;i<this.props.players.length;i++)temp.push(i);
+      for(var i=0;i<this.props.order;i++) temp.push(i);
       return temp.map((i)=>(
         <div className={this.props.playOrder===i?"playerIdolPlaying":"playerIdol"}>
           <div className="playerText">{this.props.players[i].name}</div>

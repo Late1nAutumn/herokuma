@@ -57,7 +57,6 @@ class App extends React.Component {
     socket.emit("drawCard",n);
   }
   componentDidMount() {
-    console.log(process.env.PORT);
     this.setState({id:Math.floor(Math.random()*63365).toString()});
     var time=(new Date()).getTime();
     console.log("App loading time:"+(time-window.startTime)+"ms");

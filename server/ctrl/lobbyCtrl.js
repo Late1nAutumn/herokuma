@@ -89,7 +89,6 @@ module.exports={
   },
   disconnect: (index,callback)=>{
     log("user "+index+" disconnected",31);
-    io.sockets.emit("clientState",{page:"room"});
     if(index!==-1){
       roommates[index]=roommates[roommates.length-1];
       roommates.pop();
@@ -99,6 +98,7 @@ module.exports={
       roomUpdate("dc");
       return checkRoomState(callback);
     }
+    io.sockets.emit("clientState",{page:"room"}); //just avoid bug for now
   },
   getRoomInfo: (socket,index)=>{
     socket.emit("clientState",{roommates: roomInfo(index)});
