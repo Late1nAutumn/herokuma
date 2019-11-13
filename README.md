@@ -1,17 +1,14 @@
-# Template of socket.io
+# Realtime Playground
 
-> template for realtime apps
+> This repo is rendering a multiplayer Uno card game server online.
 
 ## Installing Dependencies and Start Server
 
 From within the root directory:
 
 ```sh
-git remote remove origin
-git remote add origin https://github.com/...
-```
-```sh
 npm install
-npm run build
+npm run build (for deployment on Heroku)
+npm run building
 npm start
 ```

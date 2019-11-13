@@ -1,4 +1,4 @@
-const { io, app } = require("../init");
+const {io} = require("../init");
 const Player = require("../class/player");
 const config = require("../config");
 
@@ -6,7 +6,7 @@ var roommates = [];
 var launchCounter = 0; //avoid multiple launch
 
 const log=(str,color)=>{
-  console.log("\u001b["+color+"m"+str+"\u001b[0m");
+  if(config.devMode) console.log("\u001b["+color+"m"+str+"\u001b[0m");
 };
 const roomInfo=(index)=>{ //index should be number
   var res=[];

@@ -16,8 +16,8 @@ class Desktop extends React.Component{
     return color(str[0]);
   }
   cardName(str){
-    if(str==='wd')return "+4";
-    if(str==='wc')return "wild";
+    if(str.slice(0,2)==='wd')return "+4";
+    if(str.slice(0,2)==='wc')return "wild";
     if(str[1]==='d')return "+2";
     if(str[1]==='s')return "skip";
     if(str[1]==='r')return "reve\nrse";
@@ -63,15 +63,25 @@ class Desktop extends React.Component{
     <div className={this.props.order===this.props.playOrder?"handPlaying":"hand"}>
       <div className="buttonBox">
         <div className="interfaceButton"
-          onClick={()=>{this.props.drawCard(1)}}>Draw</div>
+          onClick={this.props.drawCard}>Draw</div>
         <div className="interfaceButton">uno</div>
       </div>
       {this.props.hand.map((str,i)=>(
         // Todo: wild card color picking
         // Todo: combo card modal
-        <div className={"handCard"+this.cardColorClass(str)}
-          onClick={()=>{this.props.playCard(i)}}>
+        <div className={"handCard"+this.cardColorClass(str)+
+          ((this.props.hotCard && i+1===this.props.hand.length)?" hotCard":"")}
+          onClick={()=>{this.props.playCard(i,
+            (str[0]!=="w" && str[1]==="d")?"2":"",false)}}>
           {this.cardName(str)}
+          {str[0]!=="w"?<div/>:<div className="wildRed"
+            onClick={()=>{this.props.playCard(i,"r"+(str[1]==="d"?"4":""),false)}}/>}
+          {str[0]!=="w"?<div/>:<div className="wildBlue"
+            onClick={()=>{this.props.playCard(i,"b"+(str[1]==="d"?"4":""),false)}}/>}
+          {str[0]!=="w"?<div/>:<div className="wildYellow"
+            onClick={()=>{this.props.playCard(i,"y"+(str[1]==="d"?"4":""),false)}}/>}
+          {str[0]!=="w"?<div/>:<div className="wildGreen"
+            onClick={()=>{this.props.playCard(i,"g"+(str[1]==="d"?"4":""),false)}}/>}
         </div>
       ))}
     </div>
