@@ -31,6 +31,9 @@ io.on("connection", socket => {
 
   //Todo: avoid spam name
 
+  //Todo: fix bug that server will crash when all player left
+  //Todo: fix bug that game can't launch (might bc spectator or multiclient on 1 device)
+
   socket.on("nameSubmit", ({ name }) => {
     index = lobbyCtrl.nameSubmit(socket, name, gaming);
     //Todo:during gaming

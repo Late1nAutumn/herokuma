@@ -73,6 +73,11 @@ p.lobbyButton {
 /* .deskStatus{
   display: inline-block;
 } */
+
+.orderArrow {
+  color: white;
+  font-size: 45px;
+}
 .opponents {
   margin-top: 20px;
 }
