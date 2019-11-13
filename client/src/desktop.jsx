@@ -26,7 +26,7 @@ class Desktop extends React.Component{
   render(){return(<div className="desktop">
     <div>
       <div className="deskStatus">{"Cards in deck: "+this.props.remainCard}</div>
-      <div className="orderArrow">{[1,1,1,1,1,1,1,1,1,1,1,1,1,1].map(()=>(
+      <div className="orderArrow">{[1,1,1,1,1,1,1,1,1,1,1,1].map(()=>(
         this.props.playDirection>0?"⇨ ":"⇦ "))}</div>
     </div>
 
