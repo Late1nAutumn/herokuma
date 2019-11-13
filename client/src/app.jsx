@@ -7,8 +7,8 @@ import Lobby from "./lobby.jsx";
 import Desktop from "./desktop.jsx";
 
 const socket = io.connect(
-  "http://localhost:3000");
-  // "https://lateinautumn.herokuapp.com");
+  // "http://localhost:3000");
+  "https://lateinautumn.herokuapp.com");
 
 window.reset=(pw)=>{socket.emit("reset",pw)};
 //Todo: fix any style bug by empty string (or space)
@@ -76,12 +76,15 @@ class App extends React.Component {
     socket.emit("userReady",status);
   }
   playCard(i,extra,combo){
-    var valid=true;
-    var card=this.state.hand[i]+extra;
-    var target=this.state.history[0].card;
-    // if(target.slice(0,2)==="wd")
+    // if(this.state.order===this.state.playOrder){ //check if it is player's turn
+      // var target = this.state.history[0].card;
+      // var burden = target.slice(3);
+      var valid =true;
+      var card=this.state.hand[i]+extra;
+      // if(target.slice(0,2)==="wd")
 
-    if(valid) socket.emit("playCard",{i:i,card:card,combo:combo});
+      if(valid) socket.emit("playCard",{i:i,card:card,combo:combo});
+    // }
   }
   drawCard(n){
     socket.emit("drawCard",n);
