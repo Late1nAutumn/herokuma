@@ -77,6 +77,10 @@ io.on("connection", socket => {
     desktopCtrl.drawCard(order, n);
   });
 
+  socket.on("endTurn", ()=>{ //only triggered when hot card can't play
+    desktopCtrl.endTurn();
+  });
+
   socket.on("reset", pw => {
     gaming = lobbyCtrl.reset(pw, gaming);
   });

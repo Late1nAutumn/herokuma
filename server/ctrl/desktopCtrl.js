@@ -27,6 +27,12 @@ const deckInfo = () => {
     playDirection: playDirection
   };
 };
+const pushOrder=(x)=>{
+  if (players.length !== 1)
+  //only happen in devmode
+    playOrder =
+      (playOrder + (x || 1) * playDirection + players.length) % players.length;
+};
 module.exports = {
   gameStarter: () => {
     players = initPlayers();
@@ -67,25 +73,19 @@ module.exports = {
     //Todo: win check
 
     if (card[1] === "r") playDirection = 0 - playDirection;
-    if (players.length !== 1)
-      //only happen in devmode
-      playOrder =
-        (playOrder +
-          (card[1] === "s" ? 2 : 1) * playDirection +
-          players.length) %
-        players.length;
+    pushOrder(card[1] === "s" ? 2 : 1);
 
     players[order].socket.emit("clientState", { hand: players[order].hand });
     io.sockets.emit("clientState", deckInfo());
   },
   drawCard: (order, n) => {
+    log("player " + order + " draws "+ n +" card(s)", 32);
+
     if (order === -1) return;
     players[order].drawCard(deck.draw(n));
     if (n === 1) players[order].socket.emit("hotCard", players[order].hand);
     else {
-      if (players.length !== 1)
-        playOrder =
-          (playOrder + playDirection + players.length) % players.length;
+      pushOrder(1);
       history[0].card = history[0].card.slice(
         0,
         history[0].card[0] === "w" ? 3 : 2
@@ -93,5 +93,9 @@ module.exports = {
       players[order].socket.emit("clientState", { hand: players[order].hand });
     }
     io.sockets.emit("clientState", deckInfo());
+  },
+  endTurn: ()=>{
+    pushOrder(1);
+    io.sockets.emit("clientState", { playOrder: playOrder });
   }
 };

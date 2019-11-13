@@ -82,7 +82,9 @@ class App extends React.Component {
     socket.on("hotCard", hand => {
       this.setState({ hand: hand });
       var card = hand[hand.length - 1];
-      if (card[0] !== "w" && !this.validPlay(card, "")) return;
+      if (card[0] !== "w" && !this.validPlay(card, "")){
+        socket.emit("endTurn","");return;
+      }
 
       this.setState({ hotCard: true });
       setTimeout(() => {
