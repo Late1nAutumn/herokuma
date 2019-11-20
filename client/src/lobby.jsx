@@ -31,14 +31,14 @@ class Lobby extends React.Component {
         <div
           id="readyButton"
           className="lobbyButton"
-          onClick={this.props.ready}
+          onClick={()=>{this.props.ready("play")}}
         >
           <p>Ready</p>
         </div>
         <div
           id="watchButton"
           className="lobbyButton"
-          onClick={this.props.watch}
+          onClick={()=>{this.props.ready("watch")}}
         >
           <p>Spectate</p>
         </div>

@@ -1,5 +1,5 @@
-// const DEVMODE = true;
-const DEVMODE = false;
+const DEVMODE = true;
+// const DEVMODE = false;
 module.exports = {
   devMode: DEVMODE,
   resetPassword: "ahh ymg' ah turn fahf llll",

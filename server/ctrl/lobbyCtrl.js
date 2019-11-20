@@ -85,20 +85,15 @@ module.exports={
     roomUpdate("ready");
     return checkRoomState(callback);
   },
-  disconnect: (index,callback)=>{
+  disconnect: (index,gaming,callback)=>{
     log("user "+index+" disconnected",31);
-    if(index!==-1){
-      roommates[index]=roommates[roommates.length-1];
-      roommates.pop();
-      if(roommates[index]){ //avoid this being the last element
-        roommates[index].socket.emit("moveIndex",index);
-      }
-      roomUpdate("dc");
-      return checkRoomState(callback);
-    }
-    for(var i of roommates) i.attending("pend");
-    io.sockets.emit("clientState",{page:"room"}); //just avoid bug for now
-    return "lfm";
+    if(index!==-1) return;
+    roommates[index]=roommates[roommates.length-1];
+    roommates.pop();
+    if(roommates[index]) //avoid this being the last element
+      roommates[index].socket.emit("moveIndex",index);
+    roomUpdate("dc");
+    return gaming!=="playing" ? checkRoomState(callback) : gaming;
   },
   getRoomInfo: (socket,index)=>{
     socket.emit("clientState",{roommates: roomInfo(index)});

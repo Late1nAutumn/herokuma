@@ -27,6 +27,7 @@ lobbyCtrl.attend(5000);
 io.on("connection", socket => {
   //might be better using on 'connect'
   var index = -1;
+  var order = -1;
   log("new connection", 33);
 
   //Todo: avoid spam name
@@ -47,10 +48,11 @@ io.on("connection", socket => {
   });
 
   socket.on("disconnect", () => {
-    //Todo: reconnection
-    gaming = lobbyCtrl.disconnect(index, () => {
+    gaming = lobbyCtrl.disconnect(index, gaming, () => {
       gameStarter();
     });
+    //Todo: reconnection
+    desktopCtrl.disconnect(order, gaming);
   });
   socket.on("updateIndex", i => {
     //triggered after S:disconnect
@@ -66,7 +68,6 @@ io.on("connection", socket => {
   ////////////////////////////////////////////
   ////////////////////////////////////////////
 
-  var order = -1;
   socket.on("updateOrder", num => {
     //triggered after S:gameStart
     order = num;

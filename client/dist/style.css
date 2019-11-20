@@ -216,3 +216,11 @@ p.lobbyButton {
 .hotCard {
   z-index: 2;
 }
+.winText {
+  position: absolute;
+  z-index: 2;
+  color: white;
+  font-size: 100px;
+  margin: auto;
+  margin-top: 200px;
+}

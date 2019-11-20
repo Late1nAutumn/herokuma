@@ -6,8 +6,8 @@ import Lobby from "./lobby.jsx";
 import Desktop from "./desktop.jsx";
 
 const socket = io.connect(
-  // "http://localhost:3000");
-  "https://lateinautumn.herokuapp.com");
+  "http://localhost:3000");
+  // "https://lateinautumn.herokuapp.com");
 
 window.reset = pw => {
   socket.emit("reset", pw);
@@ -33,13 +33,15 @@ class App extends React.Component {
       playOrder: 0,
       playDirection: 1,
       //game state
-      hotCard: false
+      hotCard: false,
+      winPage: 0
     };
   }
   inputName(e) {
     this.setState({ name: e.target.value });
   }
   submitName() {
+    //Todo: close all listeners
     if (this.state.name === "") this.setState({ name: "anonymous" });
     socket.emit("nameSubmit", { name: this.state.name || "anonymous" });
 
@@ -58,6 +60,10 @@ class App extends React.Component {
       //triggered when others disconnected, but this client is the last one on list
       this.setState({ index: index.toString() });
       socket.emit("updateIndex", index);
+    });
+    socket.on("moveOrder", order => {
+      this.setState({ order: order });
+      socket.emit("updateOrder", order);
     });
     socket.on("roomUpdate", () => {
       //triggered when anyone dc,afk,ready,login
@@ -92,14 +98,13 @@ class App extends React.Component {
         this.setState({ hotCard: false });
       }, 3000);
     });
+
+    socket.on("gameOver",(winner)=>{
+      this.setState({winPage:winner===this.state.order?1:-1});
+    });
   }
-  submitReady() {
-    var status = this.state.attend === "play" ? "pend" : "play";
-    this.setState({ attend: status });
-    socket.emit("userReady", status);
-  }
-  submitWatch() {
-    var status = this.state.attend === "watch" ? "pend" : "watch";
+  submitReady(str) {
+    var status = this.state.attend === str ? "pend" : str;
     this.setState({ attend: status });
     socket.emit("userReady", status);
   }
@@ -139,7 +144,11 @@ class App extends React.Component {
   render() {
     return (
       <div className="content">
-        {this.state.hotCard ? <div className="modal" /> : <div />}
+        {(this.state.hotCard || this.state.winPage!==0) ?
+          <div className="modal" /> : <div />}
+        {this.state.winPage===0?<div/>:<div className="winText">{
+          this.state.winPage>0?"You Win":"You lose"}
+        </div>}
         <div className="nav">
           {this.state.page === "name" ? (
             <div>
@@ -167,7 +176,6 @@ class App extends React.Component {
           <Lobby
             data={this.state.roommates}
             ready={this.submitReady.bind(this)}
-            watch={this.submitWatch.bind(this)}
           />
         )}
 

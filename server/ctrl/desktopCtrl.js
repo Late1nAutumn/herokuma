@@ -70,7 +70,19 @@ module.exports = {
     });
     history = history.slice(0, 5);
     players[order].hand.splice(i, 1);
-    //Todo: win check
+
+    //win check
+    if(players[order].hand.length===0){
+      log("player " + order + " win", 31);
+      io.sockets.emit("gameOver",order);
+      //Todo: change all roommates attend to pend
+      setTimeout(() => {
+        io.sockets.emit("clientState",{
+          page:"room",
+          winPage:0
+        });
+      }, 5000);
+    }
 
     if (card[1] === "r") playDirection = 0 - playDirection;
     pushOrder(card[1] === "s" ? 2 : 1);
@@ -97,5 +109,20 @@ module.exports = {
   endTurn: ()=>{
     pushOrder(1);
     io.sockets.emit("clientState", { playOrder: playOrder });
+  },
+  disconnect: (order,gaming)=>{
+    if(order===-1 || gaming!=="playing") return;
+    for(var i of players[order].hand)
+      deck.pile.push(i);
+    players[order]=players[players.length-1];
+    players.pop();
+    if(players[order]) //avoid this being the last element
+      players[order].socket.emit("moveOrder",order);
+    if(order===playOrder)
+      pushOrder(1);
+    var obj=deckInfo();
+    if(players.length===1)
+      obj={...obj,...{page:"room"}};
+    io.sockets.emit("clientState", obj);
   }
 };
