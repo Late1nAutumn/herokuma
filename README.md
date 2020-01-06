@@ -1,6 +1,6 @@
 # Realtime Playground
 
-> This repo is rendering a multiplayer Uno card game server online, powered by socket.io.
+> This repo is serving a multiplayer Uno card game online, powered by socket.io.
 
 ## How to play
 - The game is deployed on [heroku](https://lateinautumn.herokuapp.com/).
