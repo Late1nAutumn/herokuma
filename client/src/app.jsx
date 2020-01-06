@@ -6,8 +6,8 @@ import Lobby from "./lobby.jsx";
 import Desktop from "./desktop.jsx";
 
 const socket = io.connect(
-  "http://localhost:3000");
-  // "https://lateinautumn.herokuapp.com");
+  // "http://localhost:3000");
+  "https://lateinautumn.herokuapp.com");
 
 window.reset = pw => {
   socket.emit("reset", pw);
